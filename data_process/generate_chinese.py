@@ -56,7 +56,7 @@ def generate(row):
     latxt_image = crop_image(latxt_image_path)
     if np.sum(latxt_image) > 0:
         image_name = row[1] + '_' + chinese_label[0][0]
-        if len(merge_label) < 800:
+        if len(merge_label) < 400:
             fo.write(image_name + '\t' + merge_label + '\n')
             chinese_image = cv2.imread(chinese_image_path, 0)
             merge_image = merge_img(chinese_image, latxt_image)

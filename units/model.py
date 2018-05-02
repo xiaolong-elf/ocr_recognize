@@ -25,7 +25,7 @@ class CtcPlusAttModel(object):
         self.attention_mode = 0
         self.vocab_size = vocab_size
         self.learning_rate = tf.placeholder(tf.float32)
-        self.input_image = tf.placeholder(tf.float32, shape=(None, 32, None, 1), name='img_data')
+        self.input_image = tf.placeholder(tf.float32, shape=(None, 46, None, 1), name='img_data')
         self.batch_size = tf.shape(self.input_image)[0]
 
         # attention part placeholder

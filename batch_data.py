@@ -2,6 +2,7 @@ import numpy as np
 import sys, os
 import cv2
 from setting import *
+from data_process.image_normalize import *
 # curr_path = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(PROJECT_ROOT)
 
@@ -71,7 +72,8 @@ class DataBatch:
         # self.formulas = [self.formula_to_indices(formula) for formula in formulas]
 
     def formula_to_indices(self, formula):
-        formula = ' '.join(formula).split()
+        # TODO: attention this.
+        formula = formula.split()
         res = [self.vocab_to_idx['_STA']]
         for token in formula:
             assert token != '\n'
@@ -90,9 +92,13 @@ class DataBatch:
             print('the unreasonable path:', path)
             return None, None
         img = cv2.imread(path, 0)
-        if img.shape[1] > 1600:
+        if type(img) == type(None):
             return None, None
-        assert img.shape[0] == 32 and img.shape[1] <= 1600, print(img.shape)
+        img = resize(img)
+        img = pad_group_image(img)
+        if img.shape[0] != 46 or img.shape[1] > 1600:
+            return None, None
+        assert img.shape[0] == 46 and img.shape[1] <= 1600, print(img.shape)
         return img, self.formula_to_indices(datum[1])
 
     def load_data(self):

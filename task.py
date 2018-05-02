@@ -12,7 +12,7 @@ from units.model_test import *
 
 sys.path.append(PROJECT_ROOT)
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '1'
+os.environ['CUDA_VISIBLE_DEVICES'] = ''
 config = tf.ConfigProto(
     # device_count={'CPU': 1, 'GPU': 1},
     # gpu_options=gpu_option,
@@ -25,7 +25,7 @@ logging.basicConfig(
         format='%(asctime)-15s %(name)-5s %(levelname)-8s %(message)s',
         datefmt='%d %b %Y %H:%M:%S',
         filename='./log.txt',
-        filemode='w')
+        filemode='a+')
 
 
 class TrainWork:
@@ -35,9 +35,9 @@ class TrainWork:
         self.lr_init = 0.1
         self.lr_min = 0.00001
         self.epochs = 60
-        self.start_epoch = 0
+        self.start_epoch = 34
         self.save_id = './saved_models/model-'
-        self.model = './saved_models/model-17-04-2018--10-48/'
+        self.model = './saved_models/model-25-04-2018--16-56/'
 
         self.data_batch = DataBatch(train_path=train_path, validate_path=validate_path, test_path=test_path,
                                     vocab_path=vocab_path, formulas_path=formulas_path, image_path=image_path,
@@ -91,6 +91,7 @@ class TrainWork:
                 sess.run(init_op)
             for epoch in range(self.start_epoch, self.epochs):
                 print('the epoch is:', epoch)
+                logging.info("the epoch is: %d", epoch)
                 epoch_start_time = time.time()
                 random.shuffle(self.train_data)
                 for j in range(len(self.train_data)):
@@ -136,19 +137,24 @@ class TrainWork:
                          infer_model.att_label: input_data['att_labels'],
                          infer_model.max_dec_iteration: [input_data['att_labels'].shape[1]]}
             predict_labels = infer_model.predict(infer_sess, feed_dict=feed_dict)
+            print('predict_labels:', predict_labels[0])
+            print('att_labels:', input_data['att_labels'][0])
             print('the cost time is:', time.time() - start)
             display_result(input_data['input_image'][0], input_data['att_labels'][0], predict_labels[0])
 
 
 if __name__ == "__main__":
-    train_path = '../data/baidu_data/baidu.lst'
+    # train_path = '../data/chinese_formula_data/label.txt'
     # test_path = '../id_data/test_filter.lst'
-    test_path = '../chinese_formula_data/tmp.lst'
-    vocab_path = '../data/baidu_data/vocab.txt'
-    image_path = '../data/baidu_data/process_image'
-    formula_path = '../data/baidu_data/baidu.lst'
-    mulwork = TrainWork(train_path=train_path, validate_path=None, test_path=None,
-                        vocab_path=vocab_path, image_path=image_path, formulas_path=formula_path, batch_size=20)
-    mulwork.init_session()
-    mulwork.train_process(restore=False)
-    # mulwork.infer_process()
+    # test_path = '../chinese_formula_data/tmp.lst'
+    vocab_path = '../data/chinese_formula_data/vocab.txt'
+    # image_path = '../data/chinese_formula_data/processed_image'
+    # formula_path = '../data/chinese_formula_data/label.txt'
+    test_path = '../data/tmp_data/right_label.txt'
+    formula_path = '../data/tmp_data/right_label.txt'
+    image_path = '../data/tmp_data'
+    mulwork = TrainWork(train_path=None, validate_path=None, test_path=test_path,
+                        vocab_path=vocab_path, image_path=image_path, formulas_path=formula_path, batch_size=1)
+    # mulwork.init_session()
+    # mulwork.train_process(restore=True)
+    mulwork.infer_process()

@@ -6,8 +6,8 @@ sys.path.append(PROJECT_ROOT)
 
 class Vocab(object):
     def __init__(self):
-        self.label_path = '../..//data/baidu_data/baidu.lst'
-        self.output_file = '../../data/baidu_data/vocab.txt'
+        self.label_path = '../..//data/chinese_formula_data/label.txt'
+        self.output_file = '../../data/chinese_formula_data/vocab.txt'
         self.unk_threshold = 1
 
 
@@ -24,7 +24,7 @@ def main():
             if len(line) < 2:
                 continue
             line_strip = line[1]
-            line_strip = ' '.join(line_strip).split()
+            line_strip = line_strip.split()
             # tokens = line_strip.split()
             print(line_strip)
             for token in line_strip:

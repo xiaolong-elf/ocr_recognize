@@ -23,20 +23,19 @@ def load_vocab(filename):
     with open(filename) as f:
         for idx, token in enumerate(f):
             token = token.strip()
-            vocab[idx + 5] = token
+            vocab[idx + 4] = token
 
     # add pad and unk tokens
     vocab[0] = "_STA"
     vocab[1] = '_PAD'
     vocab[2] = '_UNK'
     vocab[3] = '_END'
-    vocab[4] = 'blank'
 
     return vocab
 
 
 # vocab = open('data/latex_vocab.txt').read().split('\n')
-vocab_to_idx = load_vocab('../data/baidu_data/vocab.txt')
+vocab_to_idx = load_vocab('../data/chinese_formula_data/vocab.txt')
 
 
 # vocab_to_idx = dict([(vocab[i], i) for i in range(len(vocab))])
@@ -44,16 +43,12 @@ vocab_to_idx = load_vocab('../data/baidu_data/vocab.txt')
 
 def convert_to_formula(labels):
     real_label = [vocab_to_idx[i] for i in labels]
-    print('aaaaaaaa', real_label)
     label_copy = real_label.copy()
     for k in label_copy:
         if k in ['_STA', '_PAD', '_UNK', '_END']:
             real_label.remove(k)
-    print('bbbbbbbb', real_label)
     real_label = ''.join(real_label)
-    label = real_label.replace('blank', ' ')
-    print('cccccc', label)
-    return label
+    return real_label
 
 
 def display_result(img, gt_labels, predicted_labels):
@@ -70,7 +65,7 @@ def display_result(img, gt_labels, predicted_labels):
 
     axes[1].set_title("Prediction")
     predicted_formula = convert_to_formula(predicted_labels)
-    # print('predict label:', predicted_formula)
+    print('predict label:', predicted_formula)
     try:
         axes[1].text(s=predicted_formula, **kwargs)
     except ValueError:
@@ -79,7 +74,7 @@ def display_result(img, gt_labels, predicted_labels):
 
     axes[2].set_title("[ Ground Truth ]")
     gt_formula = convert_to_formula(gt_labels)
-    # print('get formula:', gt_formula)
+    print('get formula:', gt_formula)
     try:
         axes[2].text(s=gt_formula, **kwargs)
     except ValueError:

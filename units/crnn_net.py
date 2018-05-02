@@ -92,10 +92,10 @@ def convnet_layers(inputs, widths, mode):
         pool4 = pool_layer(conv4, 2, 'valid', 'pool4')  # 11,11
         conv5 = conv_layer(pool4, layer_params[4], training)  # 11,11
         conv6 = conv_layer(conv5, layer_params[5], training)  # 11,11
-        pool6 = pool_layer(conv6, 2, 'valid', 'pool6')  # 5,5
+        pool6 = pool_layer(conv6, 1, 'valid', 'pool6')  # 5,5
         conv7 = conv_layer(pool6, layer_params[6], training)  # 5,5
         conv8 = conv_layer(conv7, layer_params[7], training)  # 5,5
-        pool8 = tf.layers.max_pooling2d(conv8, [3, 1], [3, 1],
+        pool8 = tf.layers.max_pooling2d(conv8, [5, 1], [3, 1],
                                         padding='valid', name='pool8')  # 1,5
         features = tf.squeeze(pool8, axis=1, name='features')  # squeeze row dim
 
@@ -113,10 +113,12 @@ def convnet_layers(inputs, widths, mode):
 
         after_pool2 = tf.ceil(tf.divide((after_conv1 - 2.0 + 1.0), two))
 
-        after_pool4 = tf.ceil(tf.divide((after_pool2 - 2.0 + 1.0), two))
+        # after_pool2 = tf.cast(after_pool2, tf.int32)
         # after_pool4 = tf.subtract(after_pool2, one)
-        after_pool6 = tf.ceil(tf.divide((after_pool4 - 2.0 + 1.0), two))
-        # after_pool6 = tf.subtract(after_pool4, one)
+        after_pool4 = tf.ceil(tf.divide((after_pool2 - 2.0 + 1.0), two))
+        # after_pool6 = tf.ceil(tf.divide((after_pool4 - 2.0 + 1.0), two))
+        after_pool4 = tf.cast(after_pool4, tf.int32)
+        after_pool6 = tf.subtract(after_pool4, one)
 
         after_pool8 = tf.cast(after_pool6, tf.int32)
 
